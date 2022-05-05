@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  mysql:
+    container_name: morfans-mysql
+  wordpress:
+
+  wp_backup:
+    container_name: morfans-wpbackup
+    build: .
+    restart: always
+    depends_on:
+      - mysql
+      - wordpress
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # backup folder
+      - ./wpback-git:/backups
+      # wordpress uploads folder
+      - ./src/web/app/uploads:/backups/uploads:ro
+      # gitub deployment key
+      - ./wp_backup.key:/wp_backup.key
+    environment:
+      - MYSQL_CONTAINTER_NAME=morfans-mysql
+    env_file:
+      - .env
